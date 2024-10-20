@@ -1,6 +1,38 @@
 const Form = require('../models/formModel');
 const Job = require('../models/jobModel');
 const Service = require('../models/serviceModel');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Set up Multer for file upload
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        //const { cid } = req.body;
+        const uploadDir = path.join(__dirname, '../uploads', 1);
+        fs.mkdirSync(uploadDir, { recursive: true }); // Ensure directory exists
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // Add timestamp to avoid overwriting files
+    },
+});
+
+const upload = multer({ storage });
+
+exports.uploadFile = async (req, res) => {
+    // #swagger.tags = ['form']
+    try {
+        if (!req.file) {
+          return res.status(400).json({ message: 'No file uploaded' });
+        }
+    
+        // The uploaded file details are now available in req.file
+        res.status(200).json({ message: 'File uploaded successfully', file: req.file });
+      } catch (err) {
+        res.status(500).json({ message: 'Error saving file', error: err.message });
+      }
+};
 
 // Get all forms
 exports.getAllForms = async (req, res) => {
