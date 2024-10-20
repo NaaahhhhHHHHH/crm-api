@@ -39,6 +39,10 @@
     {
       "name": "assignment",
       "description": "API for managing assignment"
+    },
+    {
+      "name": "mail",
+      "description": "API for managing mail"
     }
   ],
   "schemes": [
@@ -1807,6 +1811,45 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/sendmail": {
+      "post": {
+        "tags": [
+          "mail"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "example": "any"
+                },
+                "subject": {
+                  "example": "any"
+                },
+                "text": {
+                  "example": "any"
+                },
+                "html": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           },
           "500": {
             "description": "Internal Server Error"

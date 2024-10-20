@@ -39,7 +39,11 @@ const doc = {
     {
       "name": "assignment",
       "description": "API for managing assignment"
-    }
+    },
+    {
+      "name": "mail",
+      "description": "API for managing mail"
+    },
   ],
 };
 
@@ -53,6 +57,7 @@ const routes = [
     './routes/ownerRoute.js',
     './routes/authRoute.js',
     './routes/assignmentRoute.js',
+    './routes/mailRoute.js',
 ];
 
 swaggerAutogen(outputFile, routes, doc);
