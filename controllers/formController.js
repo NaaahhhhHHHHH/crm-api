@@ -38,7 +38,10 @@ exports.uploadFile = async (req, res) => {
 exports.getAllForms = async (req, res) => {
     // #swagger.tags = ['form']
     try {
-        const forms = await Form.findAll();
+        let forms = await Form.findAll();
+        if (req.user.role == "customer") {
+            forms = forms.filter(r => r.cid == req.user.id)
+        }
         res.status(200).json(forms);
     } catch (err) {
         res.status(500).json({ message: 'Error fetching forms', error: err.message });

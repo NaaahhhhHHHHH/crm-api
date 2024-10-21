@@ -29,15 +29,6 @@ exports.loginAdmin = async (req, res) => {
                 }
             });
         }
-        if (!user) {
-            userType = 'customer';
-            user = await Customer.findOne({
-                where: {
-                    username
-                }
-            });
-        }
-
         // If user not found
         if (!user) {
             return res.status(400).json({
@@ -46,9 +37,6 @@ exports.loginAdmin = async (req, res) => {
         }
 
         let verification = true;
-        if (userType == 'customer') {
-            verification = user.verification
-        }
 
         // Check if the password is valid
         const isMatch = await bcrypt.compare(password, user.password);
@@ -103,7 +91,7 @@ exports.loginCustomer = async (req, res) => {
     try {
         let user = null;
         let origin = req.header('origin');
-        let userType = 'owner';
+        let userType = 'customer';
         user = await Customer.findOne({
             where: {
                 username

@@ -17,6 +17,9 @@ exports.getAllJobs = async (req, res) => {
             let jobList = assignList.map(r => r.jid)
             jobs = jobs.filter(r => jobList.includes(r.id))
         }
+        if (req.user.role == "customer") {
+            jobs = jobs.filter(r => r.cid == req.user.id)
+        }
         res.status(200).json(jobs);
     } catch (err) {
         res.status(500).json({ message: 'Error fetching jobs', error: err.message });

@@ -4,11 +4,12 @@ const { Op } = require('sequelize');
 const Assignment = require('../models/assignmentModel');
 const Job = require('../models/jobModel');
 const Form = require('../models/formModel');
+const Ticket = require('../models/ticketModel');
 const fs = require('fs');
 const path = require('path');
 exports.setupCronJobs = () => {
     // Schedule the task to every 1 hour
-    cron.schedule('*/10 * * * *', async () => {
+    cron.schedule('* * * * *', async () => {
         try {
             const now = new Date();
             const assignmentsToExpire = await Assignment.findAll({
@@ -76,7 +77,14 @@ exports.setupCronJobs = () => {
                     console.log(`Updated job ${j.id} to 'Running'`);
                 }
             }
+            console.log('Checked and updated assignments and jobs successfully.');
+        } catch (error) {
+            console.error('Error updating assignments and jobs:', error);
+        }
+    });
 
+    cron.schedule('0 0 * * *', async () => {
+        try {
             const uploadDir = path.join(__dirname, '../uploads');
             const files = fs.readdirSync(uploadDir); // Read all files in the uploads directory
 
@@ -93,6 +101,18 @@ exports.setupCronJobs = () => {
                 })
             }
 
+            const listTicket = await Ticket.findAll();
+            for (let ticket of listTicket) {
+                let ticketData = ticket.data.filter( f => f.attachment)
+                ticketData.forEach(f => {
+                    if (f && f.attachment && f.attachment.fileList && f.attachment.fileList.length) {
+                        f.attachment.fileList.forEach( n => {
+                            validFileNames.push(n.storagename)
+                        })
+                    }
+                })
+            }
+
             for (const file of files) {
                 if (!validFileNames.includes(file)) {
                     const filePath = path.join(uploadDir, file);
@@ -100,13 +120,11 @@ exports.setupCronJobs = () => {
                     console.log(`Deleted file: ${file}`);
                 }
             }
-
+            
             console.log('File check and cleanup completed.');
-
-            console.log('Checked and updated assignments and jobs successfully.');
         } catch (error) {
-            console.error('Error updating assignments and jobs:', error);
+            console.error('Error delete file:', error);
         }
-    });
+    })
 };
 

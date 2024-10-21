@@ -16,7 +16,7 @@ app.use(express.json());
 // Define Routes
 app.use(cors({
   origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:3000', 'http://localhost:5000', 'https://crm.allinclicks.net', 'https://crmc.allinclicks.net', 'https://crmapi.allinclicks.net'];
+    const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:5000', 'https://crm.allinclicks.net', 'https://crmc.allinclicks.net', 'https://crmapi.allinclicks.net'];
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -33,6 +33,7 @@ app.use('/', require('./routes/ownerRoute'));
 app.use('/', require('./routes/authRoute'));
 app.use('/', require('./routes/assignmentRoute'));
 app.use('/', require('./routes/mailRoute'));
+app.use('/', require('./routes/ticketRoute'));
 
 sequelize.sync({ alter: false })
   .then(() => {
