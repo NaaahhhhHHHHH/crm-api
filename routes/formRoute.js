@@ -26,18 +26,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
 router.post('/api/form', authenticateToken, createForm);
 router.get('/api/form', authenticateToken, getAllForms);
 router.get('/api/form/:id', authenticateToken, getFormById);
 router.put('/api/form/:id', authenticateToken, updateForm);
 router.delete('/api/form/:id', authenticateToken, deleteForm);
+
 router.post('/api/upload', authenticateToken, upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
   res.status(200).json({ message: 'File uploaded successfully', file: req.file });
 });
+
 router.get('/api/download/:filename', authenticateToken, (req, res) => {
   const { filename } = req.params;
   const filePath = path.join(__dirname, '../uploads', filename);
@@ -59,6 +60,7 @@ router.get('/api/download/:filename', authenticateToken, (req, res) => {
     });
   });
 });
+
 router.delete('/api/delete/:filename', (req, res) => {
   const { filename } = req.params;
   const filePath = path.join(__dirname, '../uploads', filename);
