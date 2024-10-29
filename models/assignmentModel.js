@@ -64,7 +64,10 @@ const Assignment = sequelize.define('Assignment', {
         onDelete: 'CASCADE'
     },
     status: {
-        type: DataTypes.ENUM('Accepted', 'Decline', 'Waiting'),
+        type: DataTypes.STRING,
+        validate: {
+            isIn: [['Accepted', 'Decline', 'Waiting']]
+        },
         allowNull: false,
         defaultValue: 'Waiting',
         comment: 'The current status of the assignment',

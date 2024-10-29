@@ -35,7 +35,7 @@ app.use('/', require('./routes/assignmentRoute'));
 app.use('/', require('./routes/mailRoute'));
 app.use('/', require('./routes/ticketRoute'));
 
-sequelize.sync({ alter: false })
+sequelize.sync({ alter: true })
   .then(() => {
     console.log('Database & tables created!');
   })

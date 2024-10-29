@@ -56,7 +56,10 @@ const Ticket = sequelize.define('Job', {
         onDelete: 'CASCADE'
     },
     status: {
-        type: DataTypes.ENUM('Pending', 'In Progress', 'Complete', 'Closed'),
+        type: DataTypes.STRING,
+        validate: {
+            isIn: [['Pending', 'In Progress', 'Complete', 'Closed']]
+        },
         allowNull: false,
         defaultValue: 'Pending',
         comment: 'The current status of the ticket',

@@ -88,7 +88,10 @@ const Job = sequelize.define('Job', {
     //     }
     // }
     status: {
-        type: DataTypes.ENUM('Pending', 'Preparing', 'Running', 'Complete', 'Maintain'),
+        type: DataTypes.STRING,
+        validate: {
+            isIn: [['Pending', 'Preparing', 'Running', 'Complete', 'Maintain']]
+        },
         allowNull: false,
         defaultValue: 'Pending',
         comment: 'The current status of the job',
