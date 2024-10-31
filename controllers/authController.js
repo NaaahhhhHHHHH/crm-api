@@ -10,7 +10,7 @@ exports.loginAdmin = async (req, res) => {
     const {
         username,
         password
-    } = req.body; // role can be 'employee', 'owner', or 'customer'
+    } = req.body; // role can be 'employee', 'owner'
 
     try {
         let user = null;
@@ -86,7 +86,7 @@ exports.loginCustomer = async (req, res) => {
     const {
         username,
         password
-    } = req.body; // role can be 'employee', 'owner', or 'customer'
+    } = req.body; // role can be customer'
 
     try {
         let user = null;
@@ -108,6 +108,12 @@ exports.loginCustomer = async (req, res) => {
         let verification = true;
         if (userType == 'customer') {
             verification = user.verification
+        }
+
+        if (!verification) {
+            return res.status(401).json({
+                message: 'Please verify your email',
+            });
         }
 
         // Check if the password is valid
@@ -191,6 +197,12 @@ exports.auth = async (req, res) => {
             let verification = true;
             if (role == 'customer') {
                 verification = user.verification
+            }
+
+            if (!verification) {
+                return res.status(401).json({
+                    message: 'Please verify your email',
+                });
             }
 
             // Regenerate JWT token

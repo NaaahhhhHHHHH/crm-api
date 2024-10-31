@@ -1,8 +1,9 @@
 const express = require('express');
-const { sendEmail } = require('../controllers/mailController');
+const { sendEmailConFirm, sendEmailResetPassWord } = require('../controllers/mailController');
 const router = express.Router();
 
 // Route to send email
-router.post('/api/sendmail', sendEmail);
+router.post('/api/sendEmailConFirm', sendEmailConFirm);
+router.post('/api/sendEmailResetPassWord', sendEmailResetPassWord);
 
 module.exports = router;

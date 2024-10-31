@@ -176,7 +176,7 @@
         }
       }
     },
-    "/api/{customerid}": {
+    "/api/customer/{id}": {
       "get": {
         "tags": [
           "customer"
@@ -184,7 +184,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "customerid",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -209,9 +209,7 @@
             "description": "Internal Server Error"
           }
         }
-      }
-    },
-    "/api/customer/{id}": {
+      },
       "put": {
         "tags": [
           "customer"
@@ -1605,6 +1603,45 @@
         }
       }
     },
+    "/api/uploadLogo": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/downloadLogo": {
+      "get": {
+        "description": "",
+        "produces": [
+          "image/png"
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/assignment": {
       "post": {
         "tags": [
@@ -1822,7 +1859,7 @@
         }
       }
     },
-    "/api/sendmail": {
+    "/api/sendEmailConFirm": {
       "post": {
         "tags": [
           "mail"
@@ -1835,16 +1872,37 @@
             "schema": {
               "type": "object",
               "properties": {
-                "to": {
+                "email": {
                   "example": "any"
-                },
-                "subject": {
-                  "example": "any"
-                },
-                "text": {
-                  "example": "any"
-                },
-                "html": {
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/sendEmailResetPassWord": {
+      "post": {
+        "tags": [
+          "mail"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
                   "example": "any"
                 }
               }
@@ -1868,6 +1926,11 @@
         ],
         "description": "",
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1903,6 +1966,9 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -1913,9 +1979,19 @@
           "ticket"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"
@@ -1935,11 +2011,19 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
@@ -1959,6 +2043,11 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
             "type": "string"
           },
           {
@@ -1996,6 +2085,9 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Not Found"
           },
@@ -2015,11 +2107,19 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
