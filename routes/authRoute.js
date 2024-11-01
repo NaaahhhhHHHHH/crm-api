@@ -4,11 +4,13 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const {loginCustomer, loginAdmin, auth} = require('../controllers/authController');
+const {loginCustomer, loginAdmin, auth, verifyEmail, resetPassword} = require('../controllers/authController');
 
 router.post('/api/auth/loginAdmin', loginAdmin);
 router.post('/api/auth/loginCustomer', loginCustomer);
 router.get('/api/auth', authenticateToken, auth);
+router.post('/api/verifyEmail', authenticateToken, verifyEmail);
+router.post('/api/resetPassword', authenticateToken, resetPassword);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

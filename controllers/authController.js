@@ -244,3 +244,147 @@ exports.auth = async (req, res) => {
         });
     }
 }
+
+
+exports.verifyEmail = async (req, res) => {
+    // #swagger.tags = ['auth']
+    const {
+        password
+    } = req.body;
+    try {
+        if (req.user && req.user.id && req.user.role) {
+            const id = req.user.id
+            const role = req.user.role;
+
+            switch (role) {
+                case 'employee':
+                    user = await Employee.findOne({
+                        where: {
+                            id
+                        }
+                    });
+                    break;
+                case 'owner':
+                    user = await Owner.findOne({
+                        where: {
+                            id
+                        }
+                    });
+                    break;
+                case 'customer':
+                    user = await Customer.findOne({
+                        where: {
+                            id
+                        }
+                    });
+                    break;
+                default:
+                    return res.status(400).json({
+                        message: 'Invalid role provided'
+                    });
+            }
+
+            user.verification = true;
+            user.save();
+
+            // Regenerate JWT token
+            const token = jwt.sign({
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    email: user.email,
+                    role: role,
+                    verification: user.verification
+                },
+                process.env.JWT_SECRET, {
+                    expiresIn: '1h'
+                }
+            );
+
+            return res.status(200).json({
+                message: 'Successfull change your password',
+                token,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    email: user.email,
+                    role: role,
+                    verification: user.verification
+                },
+            });
+
+        } else {
+            res.status(400).json({
+                message: 'Your link has been expired'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error while change your password',
+            error: error.message
+        });
+    }
+}
+
+exports.resetPassword = async (req, res) => {
+    // #swagger.tags = ['auth']
+    try {
+        if (req.user && req.user.id && req.user.role) {
+            const id = req.user.id
+            const role = req.user.role;
+
+            let user = await Customer.findOne({
+                        where: {
+                            id
+                        }
+                    });
+
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
+            user.save()
+
+            // const authHeader = req.headers['authorization'];
+            // const oldToken = authHeader && authHeader.split(' ')[1];
+            // jwt.
+
+            // Regenerate JWT token
+            const token = jwt.sign({
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    email: user.email,
+                    role: role,
+                    verification: user.verification
+                },
+                process.env.JWT_SECRET, {
+                    expiresIn: '1h'
+                }
+            );
+
+            return res.status(200).json({
+                message: 'Successfull verify email',
+                token,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    email: user.email,
+                    role: role,
+                    verification: user.verification
+                },
+            });
+
+        } else {
+            res.status(400).json({
+                message: 'Your link has been expired'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error while verify your email',
+            error: error.message
+        });
+    }
+}
+

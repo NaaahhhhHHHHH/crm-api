@@ -4,6 +4,7 @@ const Employee = require('../models/employeeModel');
 const Owner = require('../models/ownerModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+
 // Configure the email transporter
 const transporter = nodemailer.createTransport({
   // service: 'gmail',
@@ -22,14 +23,14 @@ exports.sendEmailConFirm = async (req, res) => {
   const { email } = req.body; // Extract email details from request body
   let role = 'customer'
   let user = await Customer.findOne({ where: { email } });
-  if (!user) {
-    user = await Employee.findOne({ where: { email } });
-    role = 'employee'
-  }
-  if (!user) {
-    user = await Owner.findOne({ where: { email } });
-    role = 'owner'
-  }
+  // if (!user) {
+  //   user = await Employee.findOne({ where: { email } });
+  //   role = 'employee'
+  // }
+  // if (!user) {
+  //   user = await Owner.findOne({ where: { email } });
+  //   role = 'owner'
+  // }
   if (!user) {
     return res.status(500).json({ message: "Can't find user" });
   }
@@ -53,9 +54,11 @@ exports.sendEmailConFirm = async (req, res) => {
     html: `
       <h1>Welcome to Our App!</h1>
       <p>Please confirm your email by clicking the link below:</p>
-      <a href="${baseUrl}/ConfirmEmail/${token}">Confirm Your Account</a>
+      <a href="${baseUrl}/VerifyMail?id=${token}">Confirm Your Account</a>
       <br><br>
-      <p>If you didn¡Çt request this, please ignore this email.</p>
+      <p>This link will expire in 1 hour</p>
+      <br><br>
+      <p>If you didn't request this, please ignore this email.</p>
     `,
   };
 
@@ -107,7 +110,9 @@ exports.sendEmailResetPassWord = async (req, res) => {
     html: `
       <h1>Password Reset Request</h1>
       <p>We received a request to reset your password. You can reset your password by clicking the link below:</p>
-      <a href="${baseUrl}/ResetPassword/${token}">Reset Password</a>
+      <a href="${baseUrl}/ResetPassword?id=${token}">Reset Password</a>
+      <br><br>
+      <p>This link will expire in 1 hour</p>
       <br><br>
       <p>If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
     `,
