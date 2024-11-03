@@ -54,7 +54,7 @@ exports.sendEmailConFirm = async (req, res) => {
     html: `
       <h1>Welcome to Our App!</h1>
       <p>Please confirm your email by clicking the link below:</p>
-      <a href="${baseUrl}/VerifyMail?id=${token}">Confirm Your Account</a>
+      <a href="${baseUrl}/#/VerifyMail?id=${token}">Confirm Your Account</a>
       <br><br>
       <p>This link will expire in 1 hour</p>
       <br><br>
@@ -110,7 +110,7 @@ exports.sendEmailResetPassWord = async (req, res) => {
     html: `
       <h1>Password Reset Request</h1>
       <p>We received a request to reset your password. You can reset your password by clicking the link below:</p>
-      <a href="${baseUrl}/ResetPassword?id=${token}">Reset Password</a>
+      <a href="${baseUrl}/#/ResetPassword?id=${token}">Reset Password</a>
       <br><br>
       <p>This link will expire in 1 hour</p>
       <br><br>

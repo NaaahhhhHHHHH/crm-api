@@ -248,9 +248,6 @@ exports.auth = async (req, res) => {
 
 exports.verifyEmail = async (req, res) => {
     // #swagger.tags = ['auth']
-    const {
-        password
-    } = req.body;
     try {
         if (req.user && req.user.id && req.user.role) {
             const id = req.user.id
@@ -302,7 +299,7 @@ exports.verifyEmail = async (req, res) => {
             );
 
             return res.status(200).json({
-                message: 'Successfull change your password',
+                message: 'Successful change your password',
                 token,
                 user: {
                     id: user.id,
@@ -329,6 +326,9 @@ exports.verifyEmail = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     // #swagger.tags = ['auth']
+    const {
+        password
+    } = req.body;
     try {
         if (req.user && req.user.id && req.user.role) {
             const id = req.user.id
@@ -363,7 +363,7 @@ exports.resetPassword = async (req, res) => {
             );
 
             return res.status(200).json({
-                message: 'Successfull verify email',
+                message: 'Successful reset password',
                 token,
                 user: {
                     id: user.id,
@@ -382,7 +382,7 @@ exports.resetPassword = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({
-            message: 'Error while verify your email',
+            message: 'Error while reset password',
             error: error.message
         });
     }
