@@ -35,6 +35,17 @@ const Service = sequelize.define('Service', {
           notEmpty: true,
       },
     },
+    blueprint: {
+      type: DataTypes.JSON,
+      allowNull: false,
+      defaultValue: {
+        checked: false,
+        listE: []
+      },
+      validate: {
+          notEmpty: true,
+      },
+    }
 }, {
     timestamps: true,
     tableName: 'services',

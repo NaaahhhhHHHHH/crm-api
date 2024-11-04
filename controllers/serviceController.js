@@ -59,7 +59,7 @@ exports.createService = async (req, res) => {
 exports.updateService = async (req, res) => {
     // #swagger.tags = ['service']
     const { id } = req.params;
-    const { name, price, description, formData } = req.body;
+    const { name, price, description, formData, blueprint} = req.body;
 
     try {
         const service = await Service.findByPk(id);
@@ -73,6 +73,7 @@ exports.updateService = async (req, res) => {
         service.price = price || service.price;
         service.description = description || service.description;
         service.formData = formData || service.formData;
+        service.blueprint = blueprint || service.blueprint;
 
         await service.save();
         res.status(200).json({ message: 'Service updated successfully', service });
