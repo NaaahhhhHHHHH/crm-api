@@ -1,5 +1,6 @@
 const Form = require('../models/formModel');
 const Job = require('../models/jobModel');
+const Assignment = require('../models/assignmentModel');
 const Service = require('../models/serviceModel');
 const multer = require('multer');
 const path = require('path');
@@ -86,6 +87,19 @@ exports.createForm = async (req, res) => {
             status: 'Pending',
             formid: newForm.id
         });
+
+        if (service.blueprint && service.blueprint.checked && service.blueprint.listE.length) {
+            for (let r of service.blueprint.listE) {
+                let assignData = r
+                assignData.jid = newJob.id
+                assignData.sid = sid
+                newJob.currentbudget -= r.payment.budget
+                await Assignment.create(assignData)
+            }
+        }
+
+        await newJob.save()
+
         res.status(201).json({ message: 'Form created successfully', form: newForm });
     } catch (err) {
         res.status(500).json({ message: 'Error creating form', error: err.message });
