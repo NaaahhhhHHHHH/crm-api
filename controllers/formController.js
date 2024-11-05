@@ -89,6 +89,7 @@ exports.createForm = async (req, res) => {
         });
 
         if (service.blueprint && service.blueprint.checked && service.blueprint.listE.length) {
+            newJob.status = 'Preparing'
             for (let r of service.blueprint.listE) {
                 let assignData = r
                 assignData.jid = newJob.id
@@ -96,9 +97,8 @@ exports.createForm = async (req, res) => {
                 newJob.currentbudget -= r.payment.budget
                 await Assignment.create(assignData)
             }
+            await newJob.save()
         }
-
-        await newJob.save()
 
         res.status(201).json({ message: 'Form created successfully', form: newForm });
     } catch (err) {
