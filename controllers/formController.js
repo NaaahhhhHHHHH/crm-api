@@ -91,6 +91,12 @@ exports.createForm = async (req, res) => {
         if (service.blueprint && service.blueprint.checked && service.blueprint.listE.length) {
             newJob.status = 'Preparing'
             for (let r of service.blueprint.listE) {
+                for (let re of r.payment.period) {
+                    let date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * re.date)
+                    re.date = date.getFullYear() + '/' 
+                        + (date.getMonth() + 1).toString().padStart(2, '0') + '/' 
+                        + date.getDate().toString().padStart(2, '0')
+                }
                 let assignData = r
                 assignData.jid = newJob.id
                 assignData.sid = sid

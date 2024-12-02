@@ -32,7 +32,7 @@ exports.getServiceById = async (req, res) => {
 // Create a new service
 exports.createService = async (req, res) => {
     // #swagger.tags = ['service']
-    const { name, price, description, formData } = req.body;
+    const { name, price, description, formData, blueprint, maintain } = req.body;
 
     try {
         // Check if the service with the same name already exists
@@ -47,6 +47,8 @@ exports.createService = async (req, res) => {
             price,
             description,
             formData,
+            blueprint,
+            maintain
         });
 
         res.status(201).json({ message: 'Service created successfully', service: newService });
@@ -59,7 +61,7 @@ exports.createService = async (req, res) => {
 exports.updateService = async (req, res) => {
     // #swagger.tags = ['service']
     const { id } = req.params;
-    const { name, price, description, formData, blueprint} = req.body;
+    const { name, price, description, formData, blueprint, maintain} = req.body;
 
     try {
         const service = await Service.findByPk(id);
@@ -74,6 +76,7 @@ exports.updateService = async (req, res) => {
         service.description = description || service.description;
         service.formData = formData || service.formData;
         service.blueprint = blueprint || service.blueprint;
+        service.maintain = maintain || service.maintain;
 
         await service.save();
         res.status(200).json({ message: 'Service updated successfully', service });

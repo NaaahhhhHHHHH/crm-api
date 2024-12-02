@@ -45,6 +45,20 @@ const Service = sequelize.define('Service', {
       validate: {
           notEmpty: true,
       },
+    },
+    maintain: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {
+            checked: false,
+            period: null,
+            date: null,
+            remind: null,
+            listE: [],
+        },
+        validate: {
+            notEmpty: true,
+        },
     }
 }, {
     timestamps: true,
