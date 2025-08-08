@@ -1,4 +1,5 @@
 const Service = require('../models/serviceModel');
+const {logger} = require('../models/AuditLog');
 
 // Get all services
 exports.getAllServices = async (req, res) => {
@@ -51,6 +52,8 @@ exports.createService = async (req, res) => {
             maintain
         });
 
+        await logger("service", "create", newService, req);
+
         res.status(201).json({ message: 'Service created successfully', service: newService });
     } catch (err) {
         res.status(500).json({ message: 'Error creating service', error: err.message });
@@ -78,6 +81,8 @@ exports.updateService = async (req, res) => {
         service.blueprint = blueprint || service.blueprint;
         service.maintain = maintain || service.maintain;
 
+        await logger("service", "update", service, req);
+
         await service.save();
         res.status(200).json({ message: 'Service updated successfully', service });
     } catch (err) {
@@ -96,6 +101,8 @@ exports.deleteService = async (req, res) => {
         if (!service) {
             return res.status(404).json({ message: 'Service not found' });
         }
+
+        await logger("service", "delete", service, req);
 
         await service.destroy();
         res.status(200).json({ message: 'Service deleted successfully' });

@@ -3,6 +3,7 @@ const Employee = require('../models/employeeModel');
 const Owner = require('../models/ownerModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {logger} = require('../models/AuditLog');
 const { Op } = require('sequelize');
 
 // Get all customers
@@ -72,7 +73,7 @@ exports.createCustomer = async (req, res) => {
             // cvv,
             // exp,
         });
-
+        await logger("employee", "create", newCustomer, req);
         res.status(201).json({ message: 'Customer created successfully', customer: newCustomer });
     } catch (err) {
         res.status(500).json({ message: 'Error creating customer', error: err.message });
@@ -118,6 +119,7 @@ exports.registerCustomer = async (req, res) => {
         });
 
         res.status(201).json({ message: 'Customer created successfully', customer: newCustomer });
+        await logger("employee", "register", newCustomer, req);
     } catch (err) {
         res.status(500).json({ message: 'Error creating customer', error: err.message });
     }
@@ -212,7 +214,7 @@ exports.updateCustomer = async (req, res) => {
         // if (exp) {
         //     customer.exp = exp;
         // }
-
+        await logger("employee", "update", customer, req);
         await customer.save();
         res.json({ message: 'Customer updated successfully', customer });
     } catch (err) {
@@ -231,7 +233,7 @@ exports.deleteCustomer = async (req, res) => {
         if (!customer) {
             return res.status(404).json({ message: 'Customer not found' });
         }
-
+        await logger("employee", "delete", customer, req);
         await customer.destroy();
         res.json({ message: 'Customer deleted successfully' });
     } catch (err) {

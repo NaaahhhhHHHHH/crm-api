@@ -34,7 +34,7 @@ exports.sendEmailConFirm = async (req, res) => {
   if (!user) {
     return res.status(500).json({ message: "Can't find user" });
   }
-  let baseUrl = role == 'customer' ? 'https://crmc.allinclicks.net' : 'https://crm.allinclicks.net'
+  let baseUrl = role == 'customer' ? 'https://portal.allinclicks.com' : 'https://crm.allinclicks.com'
   const token = jwt.sign({
     id: user.id,
     username: user.username,
@@ -90,7 +90,7 @@ exports.sendEmailResetPassWord = async (req, res) => {
   if (!user) {
     return res.status(500).json({ message: "Can't find user"});
   }
-  let baseUrl = role == 'customer' ? 'https://crmc.allinclicks.net' : 'https://crm.allinclicks.net'
+  let baseUrl = role == 'customer' ? 'https://portal.allinclicks.com' : 'https://crm.allinclicks.com'
   const token = jwt.sign({
     id: user.id,
     username: user.username,

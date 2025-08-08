@@ -2,6 +2,7 @@ const Assignment = require('../models/assignmentModel');
 const Employee = require('../models/employeeModel');
 const Service = require('../models/serviceModel');
 const Job = require('../models/jobModel');
+const {logger} = require('../models/AuditLog');
 
 // Get all assignments
 exports.getAllAssignments = async (req, res) => {
@@ -146,6 +147,8 @@ exports.createAssignment = async (req, res) => {
             assignby: req.user.role == 'employee' ? req.user.id : null
         });
 
+        await logger("assignment", "create", newAssignment, req);
+
         res.status(201).json({
             message: 'Assignment created successfully',
             assignment: newAssignment
@@ -282,7 +285,7 @@ exports.updateAssignment = async (req, res) => {
         assignment.reassignment = (reassignment || reassignment === false) ? reassignment : assignment.reassignment;
         assignment.eid = eid || assignment.eid;
         assignment.status = status || assignment.status;
-
+        await logger("assignment", "update", assignment, req);
         await assignment.save();
         res.status(200).json({
             message: 'Assignment updated successfully',
@@ -319,7 +322,7 @@ exports.deleteAssignment = async (req, res) => {
                 });
             }
         }
-        
+        await logger("assignment", "delete", assignment, req);
         if (!assignment.assignby) {
             let job = await Job.findByPk(assignment.jid)
             job.currentbudget += assignment.payment.budget

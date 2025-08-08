@@ -3,6 +3,7 @@ const Customer = require('../models/customerModel');
 const Service = require('../models/serviceModel');
 const Form = require('../models/formModel');
 const Assignment = require('../models/assignmentModel');
+const {logger} = require('../models/AuditLog');
 const { Op } = require('sequelize');
 
 // Get all jobs
@@ -79,6 +80,8 @@ exports.createJob = async (req, res) => {
             currentbudget: budget
         });
 
+        await logger("job", "create", newJob, req);
+
         res.status(201).json({ message: 'Job created successfully', job: newJob });
     } catch (err) {
         res.status(500).json({ message: 'Error creating job', error: err.message });
@@ -142,8 +145,8 @@ exports.updateJob = async (req, res) => {
         job.budget = budget || job.budget;
         // job.enddate = enddate || job.enddate;
         // job.additionalprice = additionalprice || job.additionalprice;
-
-        await job.save();
+        await logger("job", "update", job, req);
+        await job.save({ userId: JSON.stringify(req.user) });
         res.status(200).json({ message: 'Job updated successfully', job });
     } catch (err) {
         res.status(500).json({ message: 'Error updating job', error: err.message });
@@ -170,7 +173,7 @@ exports.deleteJob = async (req, res) => {
         if (!job) {
             return res.status(404).json({ message: 'Job not found' });
         }
-
+        await logger("job", "delete", job, req);
         await job.destroy();
         res.status(200).json({ message: 'Job deleted successfully' });
     } catch (err) {

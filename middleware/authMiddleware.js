@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+const { sequelize } = require('../config/db');
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -24,6 +24,6 @@ const authorizeRole = (roles) => {
 
 module.exports = {
     authenticateToken,
-    authorizeRole
+    authorizeRole,
 };
 

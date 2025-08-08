@@ -4,6 +4,7 @@ const Service = require('../models/serviceModel');
 const Form = require('../models/formModel');
 const Job = require('../models/jobModel');  // Import Job model
 const Assignment = require('../models/assignmentModel');
+const {logger} = require('../models/AuditLog');
 const { Op } = require('sequelize');
 
 // Get all tickets
@@ -86,6 +87,7 @@ exports.createTicket = async (req, res) => {
             formid,
             status: status || 'Pending'
         });
+        await logger("ticket", "create", newTicket, req);
 
         res.status(201).json({ message: 'Ticket created successfully', ticket: newTicket });
     } catch (err) {
@@ -134,7 +136,7 @@ exports.updateTicket = async (req, res) => {
         ticket.data = data || ticket.data;
         ticket.formid = formid || ticket.formid;
         ticket.status = status || ticket.status;
-
+        await logger("ticket", "update", ticket, req);
         await ticket.save();
         res.json({ message: 'Ticket updated successfully', ticket });
     } catch (err) {
@@ -153,7 +155,7 @@ exports.deleteTicket = async (req, res) => {
         if (!ticket) {
             return res.status(404).json({ message: 'Ticket not found' });
         }
-
+        await logger("ticket", "delete", ticket, req);
         await ticket.destroy();
         res.json({ message: 'Ticket deleted successfully' });
     } catch (err) {

@@ -2,6 +2,7 @@ const Form = require('../models/formModel');
 const Job = require('../models/jobModel');
 const Assignment = require('../models/assignmentModel');
 const Service = require('../models/serviceModel');
+const {logger} = require('../models/AuditLog');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -91,12 +92,6 @@ exports.createForm = async (req, res) => {
         if (service.blueprint && service.blueprint.checked && service.blueprint.listE.length) {
             newJob.status = 'Preparing'
             for (let r of service.blueprint.listE) {
-                for (let re of r.payment.period) {
-                    let date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * re.date)
-                    re.date = date.getFullYear() + '/' 
-                        + (date.getMonth() + 1).toString().padStart(2, '0') + '/' 
-                        + date.getDate().toString().padStart(2, '0')
-                }
                 let assignData = r
                 assignData.jid = newJob.id
                 assignData.sid = sid
@@ -105,6 +100,7 @@ exports.createForm = async (req, res) => {
             }
             await newJob.save()
         }
+        await logger("form", "create", newForm, req);
 
         res.status(201).json({ message: 'Form created successfully', form: newForm });
     } catch (err) {
@@ -128,7 +124,7 @@ exports.updateForm = async (req, res) => {
         form.cid = cid || form.cid;
         form.sid = sid || form.sid;
         form.data = data || form.data;
-
+        await logger("form", "update", form, req);
         await form.save();
         res.status(200).json({ message: 'Form updated successfully', form });
     } catch (err) {
@@ -147,7 +143,7 @@ exports.deleteForm = async (req, res) => {
         if (!form) {
             return res.status(404).json({ message: 'Form not found' });
         }
-
+        await logger("form", "delete", form, req);
         await form.destroy();
         res.status(200).json({ message: 'Form deleted successfully' });
     } catch (err) {

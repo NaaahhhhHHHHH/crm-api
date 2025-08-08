@@ -3,6 +3,7 @@ const Customer = require('../models/customerModel');
 const Owner = require('../models/ownerModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {logger} = require('../models/AuditLog');
 const { Op } = require('sequelize');
 
 // Fetch the list of all employees
@@ -70,6 +71,8 @@ exports.createEmployee = async (req, res) => {
             mobile,
             work,
         });
+
+        await logger("employee", "create", newEmployee, req);
 
         res.status(201).json({ message: 'Employee created successfully', employee: newEmployee });
     } catch (err) {
@@ -147,7 +150,7 @@ exports.updateEmployee = async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             employee.password = await bcrypt.hash(password, salt);
         }
-
+        await logger("employee", "update", employee, req);
         await employee.save();
         res.status(200).json({ message: 'Employee updated successfully', employee });
     } catch (err) {
@@ -166,7 +169,7 @@ exports.deleteEmployee = async (req, res) => {
         if (!employee) {
             return res.status(404).json({ message: 'Employee not found' });
         }
-
+        await logger("employee", "delete", employee, req);
         await employee.destroy();
         res.status(200).json({ message: 'Employee deleted successfully' });
     } catch (err) {

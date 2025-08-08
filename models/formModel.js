@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db.js');
+const { sequelize } = require('../config/db');
 const Customer = require('./customerModel');
 const Service = require('./serviceModel');
 const Form = sequelize.define('Form', {
@@ -38,5 +38,4 @@ const Form = sequelize.define('Form', {
     timestamps: true,
     tableName: 'forms',
 });
-
 module.exports = Form;
