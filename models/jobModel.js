@@ -87,6 +87,12 @@ const Job = sequelize.define('Job', {
     //         }
     //     }
     // }
+    note: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: '',
+        comment: 'note of the job',
+    },
     status: {
         type: DataTypes.STRING,
         validate: {

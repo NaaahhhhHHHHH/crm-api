@@ -48,7 +48,7 @@ exports.getJobById = async (req, res) => {
 // Create a new job
 exports.createJob = async (req, res) => {
     // #swagger.tags = ['job']
-    const { cid, sid, status, formid, budget } = req.body;
+    const { cid, sid, status, formid, budget, note } = req.body;
 
     try {
         // // Validate startdate and enddate
@@ -77,7 +77,8 @@ exports.createJob = async (req, res) => {
             status,
             formid,
             budget,
-            currentbudget: budget
+            currentbudget: budget,
+            note
         });
 
         await logger("job", "create", newJob, req);
@@ -92,7 +93,7 @@ exports.createJob = async (req, res) => {
 exports.updateJob = async (req, res) => {
     // #swagger.tags = ['job']
     const { id } = req.params;
-    const { cid, sid, status, formid, budget } = req.body;
+    const { cid, sid, status, formid, budget, note } = req.body;
 
     try {
         const job = await Job.findByPk(id);
@@ -143,6 +144,7 @@ exports.updateJob = async (req, res) => {
         job.status = status || job.status;
         job.formid = formid || job.formid;
         job.budget = budget || job.budget;
+        job.note = note || job.note;
         // job.enddate = enddate || job.enddate;
         // job.additionalprice = additionalprice || job.additionalprice;
         await logger("job", "update", job, req);
@@ -255,7 +257,7 @@ exports.getJobStatistic = async (req, res) => {
                 data.salary.total += a.payment.budget
                 data.salary.month[month-1] += a.payment.budget
             } else if (startLast <= dateJ && dateJ < endLast) {
-                data.salary.totalLast += j.budget
+                data.salary.totalLast += a.payment.budget
             }
         })
         data.salary.percent = data.salary.totalLast ? (data.salary.total - data.salary.totalLast) / data.salary.totalLast : 'last0'

@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 // Configure the email transporter
 const transporter = nodemailer.createTransport({
   // service: 'gmail',
-  host: 'mi3-tr103.supercp.com',//'mail.allinclicks.net',
+  host: 'mi3-tr103.supercp.com', //'mail.allinclicks.net',
   port: 2525,
   secure: false,
   auth: {
@@ -20,9 +20,15 @@ const transporter = nodemailer.createTransport({
 // Function to send email
 exports.sendEmailConFirm = async (req, res) => {
   // #swagger.tags = ['mail']
-  const { email } = req.body; // Extract email details from request body
+  const {
+    email
+  } = req.body; // Extract email details from request body
   let role = 'customer'
-  let user = await Customer.findOne({ where: { email } });
+  let user = await Customer.findOne({
+    where: {
+      email
+    }
+  });
   // if (!user) {
   //   user = await Employee.findOne({ where: { email } });
   //   role = 'employee'
@@ -32,20 +38,22 @@ exports.sendEmailConFirm = async (req, res) => {
   //   role = 'owner'
   // }
   if (!user) {
-    return res.status(500).json({ message: "Can't find user" });
+    return res.status(500).json({
+      message: "Can't find user"
+    });
   }
   let baseUrl = role == 'customer' ? 'https://portal.allinclicks.com' : 'https://crm.allinclicks.com'
   const token = jwt.sign({
-    id: user.id,
-    username: user.username,
-    name: user.name,
-    email: user.email,
-    role: role,
-    verification: true
-  },
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      role: role,
+      verification: true
+    },
     process.env.JWT_SECRET, {
-    expiresIn: '1h'
-  }
+      expiresIn: '1h'
+    }
   );
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -66,42 +74,63 @@ exports.sendEmailConFirm = async (req, res) => {
     // Send the email
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent: ' + info.response);
-    res.status(200).json({ message: 'Email sent successfully' });
+    res.status(200).json({
+      message: 'Email sent successfully'
+    });
   } catch (error) {
     console.error('Error sending email: ', error);
-    res.status(500).json({ message: 'Error sending email', error: error.message });
+    res.status(500).json({
+      message: 'Error sending email',
+      error: error.message
+    });
   }
 };
 
 // Function to send email
 exports.sendEmailResetPassWord = async (req, res) => {
   // #swagger.tags = ['mail']
-  const { email } = req.body; // Extract email details from request body
+  const {
+    email
+  } = req.body; // Extract email details from request body
   let role = 'customer'
-  let user = await Customer.findOne({ where: { email } });
+  let user = await Customer.findOne({
+    where: {
+      email
+    }
+  });
   if (!user) {
-    user = await Employee.findOne({ where: { email } });
+    user = await Employee.findOne({
+      where: {
+        email
+      }
+    });
     role = 'employee'
   }
   if (!user) {
-    user = await Owner.findOne({ where: { email } });
+    user = await Owner.findOne({
+      where: {
+        email
+      }
+    });
     role = 'owner'
   }
   if (!user) {
-    return res.status(500).json({ message: "Can't find user"});
+    return res.status(500).json({
+      message: "Can't find user"
+    });
   }
   let baseUrl = role == 'customer' ? 'https://portal.allinclicks.com' : 'https://crm.allinclicks.com'
   const token = jwt.sign({
-    id: user.id,
-    username: user.username,
-    name: user.name,
-    email: user.email,
-    role: role,
-    verification: true
-  },
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      role: role,
+      verification: true
+    },
     process.env.JWT_SECRET, {
-    expiresIn: '1h'
-  }
+      expiresIn: '1h'
+    }
   );
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -117,14 +146,91 @@ exports.sendEmailResetPassWord = async (req, res) => {
       <p>If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
     `,
   };
+  try {
+    // Send the email
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent: ' + info.response);
+    res.status(200).json({
+      message: 'Email sent successfully'
+    });
+  } catch (error) {
+    console.error('Error sending email: ', error);
+    res.status(500).json({
+      message: 'Error sending email',
+      error: error.message
+    });
+  }
+}
+
+// Function to send email
+exports.sendEmailForgotUser = async (req, res) => {
+  // #swagger.tags = ['mail']
+  const {
+    email
+  } = req.body; // Extract email details from request body
+  let role = 'customer'
+  let user = await Customer.findOne({
+    where: {
+      email
+    }
+  });
+  if (!user) {
+    user = await Employee.findOne({
+      where: {
+        email
+      }
+    });
+    role = 'employee'
+  }
+  if (!user) {
+    user = await Owner.findOne({
+      where: {
+        email
+      }
+    });
+    role = 'owner'
+  }
+  if (!user) {
+    return res.status(500).json({
+      message: "Can't find user"
+    });
+  }
+  let baseUrl = role == 'customer' ? 'https://portal.allinclicks.com' : 'https://crm.allinclicks.com'
+  const token = jwt.sign({
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      role: role,
+      verification: true
+    },
+    process.env.JWT_SECRET, {
+      expiresIn: '1h'
+    }
+  );
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Forgot Username Request',
+    html: `
+        <h1>Forgot Username</h1>
+        <p>We received your request. Here is your username:</p>
+        <h2>${user.username}</h2>
+      `,
+  };
 
   try {
     // Send the email
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent: ' + info.response);
-    res.status(200).json({ message: 'Email sent successfully' });
+    res.status(200).json({
+      message: 'Email sent successfully'
+    });
   } catch (error) {
     console.error('Error sending email: ', error);
-    res.status(500).json({ message: 'Error sending email', error: error.message });
+    res.status(500).json({
+      message: 'Error sending email',
+      error: error.message
+    });
   }
-};
+}

@@ -6,7 +6,8 @@ const {setupCronJobs} = require('./service/service');
 const cors = require('cors');
 
 const app = express();
-
+const Job = require('./models/jobModel');
+// Job.sync({alter: true});
 // Connect Database
 connectDB();
 
@@ -35,7 +36,7 @@ app.use('/', require('./routes/assignmentRoute'));
 app.use('/', require('./routes/mailRoute'));
 app.use('/', require('./routes/ticketRoute'));
 
-sequelize.sync({ alter: true })
+sequelize.sync({ alter: true, logging: console.log })
   .then(() => {
     console.log('Database & tables created!');
   })
