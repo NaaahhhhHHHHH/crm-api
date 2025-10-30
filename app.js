@@ -15,16 +15,21 @@ connectDB();
 app.use(express.json());
 
 // Define Routes
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:5000', 'https://crm.allinclicks.net', 'https://crmc.allinclicks.net', 'https://crmapi.allinclicks.net'];
+//     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   }
+// }));
+
 app.use(cors({
-  origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:5000', 'https://crm.allinclicks.net', 'https://crmc.allinclicks.net', 'https://crmapi.allinclicks.net'];
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
+  origin: '*'
 }));
+
 app.use('/', require('./routes/customerRoute'));
 app.use('/', require('./routes/serviceRoute'));
 app.use('/', require('./routes/formRoute'));
@@ -35,6 +40,8 @@ app.use('/', require('./routes/authRoute'));
 app.use('/', require('./routes/assignmentRoute'));
 app.use('/', require('./routes/mailRoute'));
 app.use('/', require('./routes/ticketRoute'));
+
+app.use('/', require('./routes/oauthRoutes'));
 
 sequelize.sync({ alter: true, logging: console.log })
   .then(() => {
