@@ -73,7 +73,7 @@ exports.createCustomer = async (req, res) => {
             // cvv,
             // exp,
         });
-        await logger("employee", "create", newCustomer, req);
+        await logger("customer", "create", newCustomer, req);
         res.status(201).json({ message: 'Customer created successfully', customer: newCustomer });
     } catch (err) {
         res.status(500).json({ message: 'Error creating customer', error: err.message });
@@ -119,7 +119,7 @@ exports.registerCustomer = async (req, res) => {
         });
 
         res.status(201).json({ message: 'Customer created successfully', customer: newCustomer });
-        await logger("employee", "register", newCustomer, req);
+        await logger("customer", "register", newCustomer, req);
     } catch (err) {
         res.status(500).json({ message: 'Error creating customer', error: err.message });
     }
@@ -192,7 +192,7 @@ exports.updateCustomer = async (req, res) => {
         customer.email = email || customer.email;
         customer.mobile = mobile || customer.mobile;
         customer.work = work || customer.work;
-        customer.verification = verification;
+        customer.verification = verification || customer.verification;
         // customer.service = service || customer.service;
 
         // Encrypt and update sensitive fields if provided
@@ -214,7 +214,7 @@ exports.updateCustomer = async (req, res) => {
         // if (exp) {
         //     customer.exp = exp;
         // }
-        await logger("employee", "update", customer, req);
+        await logger("customer", "update", customer, req);
         await customer.save();
         res.json({ message: 'Customer updated successfully', customer });
     } catch (err) {
@@ -233,7 +233,7 @@ exports.deleteCustomer = async (req, res) => {
         if (!customer) {
             return res.status(404).json({ message: 'Customer not found' });
         }
-        await logger("employee", "delete", customer, req);
+        await logger("customer", "delete", customer, req);
         await customer.destroy();
         res.json({ message: 'Customer deleted successfully' });
     } catch (err) {

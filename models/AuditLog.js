@@ -24,7 +24,7 @@ const logger = async (model, operation, object, req) => {
     documentId: object.id,
     change: object.changed(),
     user: req.user,
-    text: `${req.user.name} ${operation} ${model} #${object.id}`,
+    text: `${req.user?.name } ${operation} ${model} #${object.id}`,
   }
 
   if (operation == 'update') {
