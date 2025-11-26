@@ -7,8 +7,8 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
-require('../config/passport');
+// const passport = require('passport');
+// require('../config/passport');
 const fs = require('fs');
 const {
   loginCustomer,
@@ -170,58 +170,58 @@ router.get('/api/downloadBackground', (req, res) => {
 });
 
 
-router.get('/api/auth/google',
-  passport.authenticate('google', {
-    scope: ['profile', 'email']
-  })
-);
+// router.get('/api/auth/google',
+//   passport.authenticate('google', {
+//     scope: ['profile', 'email']
+//   })
+// );
 
 
-router.get('/api/auth/google/callback', (req, res, next) => {
-  passport.authenticate('google', { session: false }, (err, user, info) => {
-    if (err || !user) {
-      const error = info?.message || 'OAuth login failed';
-      return res.send(`
-        <html>
-          <body>
-            <script>
-              const origin = document.referrer || '*';
-              window.opener.postMessage({ error: "${error}" }, origin);
-              window.close();
-            </script>
-          </body>
-        </html>
-      `);
-    }
+// router.get('/api/auth/google/callback', (req, res, next) => {
+//   passport.authenticate('google', { session: false }, (err, user, info) => {
+//     if (err || !user) {
+//       const error = info?.message || 'OAuth login failed';
+//       return res.send(`
+//         <html>
+//           <body>
+//             <script>
+//               const origin = document.referrer || '*';
+//               window.opener.postMessage({ error: "${error}" }, origin);
+//               window.close();
+//             </script>
+//           </body>
+//         </html>
+//       `);
+//     }
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        username: user.username,
-        role: user.role,
-        verification: user.verification,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+//     const token = jwt.sign(
+//       {
+//         id: user.id,
+//         email: user.email,
+//         name: user.name,
+//         username: user.username,
+//         role: user.role,
+//         verification: user.verification,
+//       },
+//       process.env.JWT_SECRET,
+//       { expiresIn: '1h' }
+//     );
 
-    res.send(`
-      <html>
-        <body>
-          <script>
-            const origin = document.referrer || '*';
-            const token = '${token}';
-            const user = ${JSON.stringify(user)};
-            window.opener.postMessage({ token, user }, origin);
-            window.close();
-          </script>
-        </body>
-      </html>
-    `);
-  })(req, res, next);
-});
+//     res.send(`
+//       <html>
+//         <body>
+//           <script>
+//             const origin = document.referrer || '*';
+//             const token = '${token}';
+//             const user = ${JSON.stringify(user)};
+//             window.opener.postMessage({ token, user }, origin);
+//             window.close();
+//           </script>
+//         </body>
+//       </html>
+//     `);
+//   })(req, res, next);
+// });
 
 
 module.exports = router;
